@@ -9,5 +9,13 @@ const cart = {
     ],
     total: 0
 }
-const discount_cart = cart.items.map(n => {if(n.category == "tech"){n.price *= 1-discount}return n});
-console.log(discount_cart);
+function ShoppingCart(cart,discount_code)
+{
+    const return_cart = {items:undefined,total:0}
+    if(discount_code != "tskoli"){return "this is not a valid discount code"}
+    const discount_cart = cart.items.map(n => {if(n.category == "tech"){n.price *= 1-discount}return n});
+    return_cart.items = discount_cart;
+    discount_cart.forEach(item => return_cart.total += item.price);
+    return return_cart;
+}
+console.log(ShoppingCart(cart,"tskoli"));
