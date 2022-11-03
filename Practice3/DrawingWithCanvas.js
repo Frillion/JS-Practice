@@ -17,4 +17,5 @@ function domloaded(){
     ctx.arc(pacman.pos.x, pacman.pos.y,pacman.radius,Math.PI/6,((pacman.deg/180)*Math.PI));
     ctx.lineTo(pacman.pos.x,pacman.pos.y);
     ctx.fill();
+    function init(){}
 }
