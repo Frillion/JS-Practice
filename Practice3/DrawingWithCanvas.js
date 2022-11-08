@@ -1,4 +1,4 @@
-document.addEventlistener("DOMContentLoaded",domloaded(),false);
+document.addEventListener("DOMContentLoaded",domloaded(),false);
 function domloaded(){
     let canvas = document.getElementById("playspace");
     let ctx = canvas.getContext("2d");
@@ -23,14 +23,17 @@ function domloaded(){
         }
     };
     
-    let pacman = new Pacman(10,350,15,15,1,1);
+    let pacman = new Pacman(10,350,15,15,2,1);
     
     function init(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         pacman.draw();
-        if(pacman.pos.x+pacman.radius<canvas.width){
-            pacman.vel.x= -pacman.vel.x;
+        if(pacman.pos.x+pacman.radius>=canvas.width||pacman.pos.x-pacman.radius <= 0){
+            pacman.vel.x = (-pacman.vel.x);
         }
+        if(pacman.pos.y+pacman.radius>=canvas.height||pacman.pos.y-pacman.radius <= 0){
+            pacman.vel.y = (-pacman.vel.y);
+        }   
         pacman.pos.x += pacman.vel.x;
         pacman.pos.y += pacman.vel.y;
         window.requestAnimationFrame(init);
