@@ -25,6 +25,24 @@ function domloaded() {
             ctx.fillStyle = "rgb(200,200,0)";
             ctx.fill();
         }
+        borderCheck(){
+            if(this.pos.x+this.radius>canvas.width){
+                this.pos.x = canvas.width-this.radius;
+            }
+            else if(this.pos.x-this.radius < 0){
+                this.pos.x = this.radius;
+            }
+            if(this.pos.y+this.radius>canvas.height){
+                this.pos.y = canvas.height-this.radius;
+            }
+            else if(this.pos.y-this.radius< 0){
+                this.pos.y = this.radius;
+            }
+        }
+        move(){
+            pacman.pos.x += pacman.vel.x;
+            pacman.pos.y += pacman.vel.y;
+        }
     }
     class Ghost{
         constructor(size,x,y,vx,vy,color){
@@ -38,6 +56,32 @@ function domloaded() {
         draw(){
             ctx.fillStyle = this.color
             ctx.fillRect(this.pos.x,this.pos.y,this.size,this.size);
+        }
+        borderCheck(){
+            if(this.pos.x + this.size>=canvas.width||this.pos.x <= 0){
+                this.vel.x = (-this.vel.x);
+            }
+            if(this.pos.y+this.size>=canvas.height||this.pos.y<=0){
+                this.vel.y = (-this.vel.y);
+            }
+        }
+        move(){
+            this.pos.x += this.vel.x;
+            this.pos.y += this.vel.y;
+        }
+    }
+    class Point{
+        constructor(radius,x,y,color){
+            this.pos = {"x":x,"y":y};
+            this.radius = radius;
+            this.color = color;
+        }
+        draw(){
+            ctx.beginPath();
+            ctx.arc(this.pos.x,this.pos.y,this.radius,0,12*Math.PI/6);
+            ctx.closePath();
+            ctx.fillStyle = this.color;
+            ctx.fill();
         }
     }
     function gameOverCollision(ghost,pacman){
@@ -82,8 +126,21 @@ function domloaded() {
         return returnarray;
     }
     let ghosts = createGhosts(5);
+    let points = [];
     let pacman_speed = 5;
     let pacman = new Pacman(20,350,Math.random()*(canvas.width-10),Math.random()*(canvas.height-10),0,0);
+    document.addEventListener('click',(MouseEvent)=>{
+        let canvas_click_x = MouseEvent.offsetX;
+        let canvas_click_y = MouseEvent.offsetY;
+        points.forEach(((point) =>{
+            let p_distX = point.pos.x - canvas_click_x;
+            let p_distY = point.pos.y - canvas_click_y;
+            let p_distance = Math.sqrt((p_distX*p_distX) + (p_distY*p_distY));
+            if(p_distance<=point.radius){
+                points.pop(point);
+            }
+        }));
+    });
     document.addEventListener('keydown',(key)=>{
         if(key.code == "KeyW"){
             pacman.vel.y = -pacman_speed;
@@ -112,41 +169,30 @@ function domloaded() {
             pacman.vel.x = 0;
         }
     },false);
+    function makePoint(){
+        let add_point = new Point(5,Math.floor((Math.random()*canvas.width)-5),Math.floor((Math.random()*canvas.height)-5),"Yellow");
+        points.push(add_point);
+    }
+    window.setInterval(makePoint,5000);
     function init(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
+        if(points.length > 0){
+            points.forEach((point)=>{point.draw()});
+        }
         pacman.draw();
-        if(pacman.pos.x+pacman.radius>canvas.width){
-            pacman.pos.x = canvas.width-pacman.radius;
-        }
-        else if(pacman.pos.x-pacman.radius < 0){
-            pacman.pos.x = pacman.radius;
-        }
-        if(pacman.pos.y+pacman.radius>canvas.height){
-            pacman.pos.y = canvas.height-pacman.radius;
-        }
-        else if(pacman.pos.y-pacman.radius< 0){
-            pacman.pos.y = pacman.radius;
-        }
+        pacman.borderCheck();
         for(let i = 0; i < ghosts.length;i++){
             ghosts[i].draw();
         }
         ghosts.forEach((ghost)=>{gameOverCollision(ghost,pacman);}); 
         for(let i = 0;i<ghosts.length;i++){
-            if(ghosts[i].pos.x + ghosts[i].size>=canvas.width||ghosts[i].pos.x <= 0){
-                ghosts[i].vel.x = (-ghosts[i].vel.x);
-            }
-            if(ghosts[i].pos.y+ghosts[i].size>=canvas.height||ghosts[i].pos.y<=0){
-                ghosts[i].vel.y = (-ghosts[i].vel.y);
-            }
+            ghosts[i].borderCheck();
             ghosts.forEach((ghost)=>{
-                ghostCollision(ghosts[i],ghost);
-                
+                ghostCollision(ghosts[i],ghost); 
             });
-            ghosts[i].pos.x += ghosts[i].vel.x;
-            ghosts[i].pos.y += ghosts[i].vel.y;
+            ghosts[i].move(); 
         }
-        pacman.pos.x += pacman.vel.x;
-        pacman.pos.y += pacman.vel.y;
+        pacman.move(); 
         window.requestAnimationFrame(init);
     }
     init();
