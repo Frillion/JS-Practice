@@ -82,15 +82,50 @@ function domloaded() {
         return returnarray;
     }
     let ghosts = createGhosts(5);
-    let pacman = new Pacman(20,350,Math.random()*(canvas.width-10),Math.random()*(canvas.height-10),(Math.random()*10)-5,(Math.random()*10)-5);
+    let pacman_speed = 5;
+    let pacman = new Pacman(20,350,Math.random()*(canvas.width-10),Math.random()*(canvas.height-10),0,0);
+    document.addEventListener('keydown',(key)=>{
+        if(key.code == "KeyW"){
+            pacman.vel.y = -pacman_speed;
+        }
+        else if(key.code == "KeyS"){
+            pacman.vel.y = pacman_speed;
+        }
+        if(key.code == "KeyA"){
+            pacman.vel.x = -pacman_speed;
+        }
+        else if(key.code == "KeyD"){
+            pacman.vel.x = pacman_speed;
+        }
+    },false);
+    document.addEventListener('keyup',(key)=>{
+        if(key.code == "KeyW"){
+            pacman.vel.y = 0;
+        }
+        else if(key.code == "KeyS"){
+            pacman.vel.y = 0;
+        }
+        if(key.code == "KeyA"){
+            pacman.vel.x = 0;
+        }
+        else if(key.code == "KeyD"){
+            pacman.vel.x = 0;
+        }
+    },false);
     function init(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         pacman.draw();
-        if(pacman.pos.x+pacman.radius>=canvas.width||pacman.pos.x-pacman.radius <= 0){
-            pacman.vel.x = (-pacman.vel.x);
+        if(pacman.pos.x+pacman.radius>canvas.width){
+            pacman.pos.x = canvas.width-pacman.radius;
         }
-        if(pacman.pos.y+pacman.radius>=canvas.height||pacman.pos.y-pacman.radius<= 0){
-            pacman.vel.y = (-pacman.vel.y);
+        else if(pacman.pos.x-pacman.radius < 0){
+            pacman.pos.x = pacman.radius;
+        }
+        if(pacman.pos.y+pacman.radius>canvas.height){
+            pacman.pos.y = canvas.height-pacman.radius;
+        }
+        else if(pacman.pos.y-pacman.radius< 0){
+            pacman.pos.y = pacman.radius;
         }
         for(let i = 0; i < ghosts.length;i++){
             ghosts[i].draw();
