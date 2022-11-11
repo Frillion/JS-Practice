@@ -3,8 +3,14 @@ document.addEventListener("DOMContentLoaded",domloaded,false);
 function domloaded() {
     let canvas = document.getElementById("playspace");
     let ctx = canvas.getContext("2d");
+    let touch_origin = {"x":undefined,"y":undefined};
+    let touch_diff = {"x":undefined,"y":undefined};
+    let drag_sens = 20; 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    canvas.addEventListener('touchstart',handleTStart,false);
+    canvas.addEventListener('touchmove',handleTMove,false);
+    canvas.addEventListener('touchend',handleTEnd,false);
     window.addEventListener("resize",()=>{
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -84,6 +90,36 @@ function domloaded() {
             ctx.fill();
         }
     }
+    function handleTStart(tch){
+       touch_origin.x = tch.changedTouches[0].clientX;
+       touch_origin.y = tch.changedTouches[0].clientY;
+    }
+    function handleTMove(tch){
+        touch_diff.x = touch_origin.x-tch.changedTouches[0].clientX;
+        touch_diff.y = touch_origin.y-tch.changedTouches[0].clientY;
+        if(touch_diff.x > drag_sens){
+            pacman.vel.x = (-pacman_speed);
+        }
+        else if(touch_diff.x < -drag_sens){
+            pacman.vel.x = pacman_speed;
+        }
+        else{
+            pacman.vel.x = 0;
+        }
+        if(touch_diff.y > drag_sens){
+            pacman.vel.y = (-pacman_speed);
+        }
+        else if(touch_diff.y < -drag_sens){
+            pacman.vel.y = pacman_speed;
+        }
+        else{
+            pacman.vel.y = 0;
+        }
+    }
+    function handleTEnd(tch){
+        pacman.vel.x = 0;
+        pacman.vel.y = 0;
+    }
     function gameOverCollision(ghost,pacman){
         let distX = pacman.pos.x-ghost.pos.x;
         let distY = pacman.pos.y-ghost.pos.y;
@@ -92,7 +128,6 @@ function domloaded() {
         if(ghost.pos.y>pacman.pos.y){distY = pacman.pos.y-ghost.pos.y;}
         else if(ghost.pos.y+ghost.size<pacman.pos.y){distY = pacman.pos.y-(ghost.pos.y+ghost.size);}
         let distance = Math.sqrt((distX*distX)+(distY*distY));
-        console.log(distX);
         if(distance <= pacman.radius){
             alert("Game Over!");
         }
