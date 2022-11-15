@@ -4,3 +4,6 @@
 [submodule "mobile_pacman_webgame"]
 	path = mobile_pacman_webgame
 	url = https://github.com/Frillion/mobile_pacman_webgame.git
+[submodule "JS-dom-practice"]
+	path = JS-dom-practice
+	url = https://github.com/Frillion/JS-dom-practice
