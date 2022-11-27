@@ -18,3 +18,5 @@ This is in the JS-dom-practice @(version number) submodule/link which leads to a
 Project description was quite vauge so i did not complete this
 ### Project 9
 This is in the svg\_animation folder
+### Project 10
+This is in the JS-animation folder
