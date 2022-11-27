@@ -5,6 +5,10 @@ function domloaded(){
     const orange_stripe = document.getElementById("orange");
     const stripes = document.getElementsByTagName("path");
     const line_colors = ["orange","blue","cyan","cyan"];
+    let original_color = []
+    for(let i=0;i<stripes.length;i++){
+        original_color.push(stripes[i].style.fill);
+    }
     for(let i=0; i < stripes.length;i++){
         stripes[i].style.strokeDasharray = 100;
         stripes[i].style.strokeDashoffset = 0;
@@ -25,11 +29,19 @@ function domloaded(){
         loop:true
     });
     const animateOrangeClick = anime({
-        targets:orange_stripe,
+        targets:stripes,
         keyframes:[
-            {stroke:"orange",fill:"white"},
-            {stroke:"white",fill:"#F47A20"}
+            {fill:"white"},
+            {
+                fill:function(line,i){return original_color[i]},
+                delay:anime.stagger(500)
+            },
+            {
+                fill:"white",
+                delay:anime.stagger(500)
+            }
         ],
+        direction:"alternate",
         duration:3000
     });
     const playAnimOrange = () =>{
@@ -38,6 +50,7 @@ function domloaded(){
     const pauseAnimOrange = ()=>{
         animateLine.pause();
     }
+    console.log(original_color);
     animateOrangeClick.pause();
     orange_stripe.parentElement.addEventListener("mouseover",playAnimOrange);
     orange_stripe.parentElement.addEventListener("mouseleave",pauseAnimOrange);
