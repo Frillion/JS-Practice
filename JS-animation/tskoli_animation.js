@@ -42,7 +42,7 @@ function domloaded(){
             }
         ],
         direction:"alternate",
-        duration:3000
+        duration:2500
     });
     const playAnimOrange = () =>{
         animateLine.play();
