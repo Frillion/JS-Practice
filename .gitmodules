@@ -7,3 +7,6 @@
 [submodule "JS-dom-practice"]
 	path = JS-dom-practice
 	url = https://github.com/Frillion/JS-dom-practice
+[submodule "SPA"]
+	path = SPA
+	url = https://github.com/Frillion/SPA.git
